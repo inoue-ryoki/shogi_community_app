@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatApp</title>
+  <%= action_cable_meta_tag %>
+  <%= csrf_meta_tags %>
+  <%= javascript_pack_tag 'application' %>
+</head>
+<body>
+  <h1>Chat Room</h1>
+
+  <div id="messages" data-controller="chat">
+    <%= render @messages %>
+  </div>
+
+  <form id="message_form" data-controller="form" data-action="ajax:success->form#clear">
+    <input type="text" name="message[content]" id="message_content" placeholder="Type a message..." required data-form-target="content">
+    <input type="hidden" name="message[user]" id="message_user" value="User1">
+    <input type="submit" value="Send">
+  </form>
+</body>
+</html>
