@@ -4,7 +4,7 @@
   <title>ChatApp</title>
   <%= action_cable_meta_tag %>
   <%= csrf_meta_tags %>
-  <%= javascript_pack_tag 'application' %>
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
 </head>
 <body>
   <h1>Chat Room</h1>
@@ -13,10 +13,14 @@
     <%= render @messages %>
   </div>
 
-  <form id="message_form" data-controller="form" data-action="ajax:success->form#clear">
-    <input type="text" name="message[content]" id="message_content" placeholder="Type a message..." required data-form-target="content">
-    <input type="hidden" name="message[user]" id="message_user" value="User1">
-    <input type="submit" value="Send">
-  </form>
+  <%= form_with model: @message, data: { turbo_frame: 'new_message' } do |form| %>
+    <%= form.text_field :content, placeholder: "Type a message..." %>
+    <%= form.hidden_field :user, value: "User1" %>
+    <%= form.submit "Send" %>
+  <% end %>
+
+  <%= turbo_frame_tag 'new_message' %>
+
+  <%= turbo_stream_from "chat_channel" %>
 </body>
 </html>

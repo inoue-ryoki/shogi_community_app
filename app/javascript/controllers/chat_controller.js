@@ -1,12 +1,15 @@
-import { Controller } from "stimulus"
-import consumer from "../channels/consumer"
+import { Controller } from "@hotwired/stimulus"
+import { createConsumer } from "@rails/actioncable"
 
 export default class extends Controller {
   connect() {
-    this.channel = consumer.subscriptions.create("ChatChannel", {
-      received: (data) => {
-        this.element.insertAdjacentHTML("beforeend", `<p><b>${data.user}:</b> ${data.message}</p>`)
-      }
+    this.channel = createConsumer().subscriptions.create("ChatChannel", {
+      received: this.received.bind(this)
     })
+  }
+
+  received(data) {
+    const messages = document.getElementById('messages')
+    messages.insertAdjacentHTML('beforeend', data.message)
   }
 }
